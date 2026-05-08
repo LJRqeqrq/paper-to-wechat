@@ -105,7 +105,7 @@ paper-to-wechat/
 ├── .claude/
 │   ├── agents/                          # Agent 定义（主编排 + 4 个子 Agent）
 │   └── settings.local.json              # 本机权限配置（不上传 Git）
-├── .env                                 # 微信密钥（不上传 Git）
+├── .env                                 # 微信密钥
 ├── .mcp.json                            # MCP 服务器注册
 ├── CLAUDE.md                            # Claude Code 项目指令
 ├── README.md
