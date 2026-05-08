@@ -1,0 +1,19 @@
+{
+  "name": "screenshot-mcp",
+  "version": "0.1.0",
+  "description": "HTML 截图 MCP Server，用于生成微信公众号推文封面",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "puppeteer": "^24.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}

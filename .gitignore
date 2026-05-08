@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+.venv/
+venv/
+
+# Node.js
+node_modules/
+dist/
+
+# IDE
+.vscode/
+.idea/
+
+# Secrets
+.env
+.claude/settings.local.json
+.mcp.json
+
+# Output
+blog/*
+!blog/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db

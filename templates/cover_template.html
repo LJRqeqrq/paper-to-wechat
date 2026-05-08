@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=900, height=500">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 900px;
+    height: 500px;
+    overflow: hidden;
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue", sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .cover-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .cover-bg::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(79,172,254,0.3) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .cover-bg::after {
+    content: '';
+    position: absolute;
+    bottom: -120px;
+    left: -60px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(0,201,167,0.2) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .cover-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 60px 80px;
+    max-width: 860px;
+  }
+
+  .cover-venue {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .cover-title {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.3;
+    color: #ffffff;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .cover-title-en {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 24px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .cover-divider {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #4facfe, #00c9a7);
+    margin: 0 auto 24px;
+    border-radius: 2px;
+  }
+
+  .cover-authors {
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .cover-tag {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 4px 16px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 1px;
+    background: rgba(255,255,255,0.05);
+  }
+
+  .cover-decorations {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .cover-dot {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .cover-dot-1 { width: 8px; height: 8px; top: 60px; left: 80px; }
+  .cover-dot-2 { width: 6px; height: 6px; top: 120px; right: 100px; }
+  .cover-dot-3 { width: 10px; height: 10px; bottom: 80px; left: 160px; }
+  .cover-dot-4 { width: 5px; height: 5px; bottom: 100px; right: 180px; }
+  .cover-dot-5 { width: 7px; height: 7px; top: 50%; left: 50px; }
+</style>
+</head>
+<body>
+  <div class="cover-bg"></div>
+  <div class="cover-decorations">
+    <span class="cover-dot cover-dot-1"></span>
+    <span class="cover-dot cover-dot-2"></span>
+    <span class="cover-dot cover-dot-3"></span>
+    <span class="cover-dot cover-dot-4"></span>
+    <span class="cover-dot cover-dot-5"></span>
+  </div>
+  <div class="cover-content">
+    {{#venue}}
+    <div class="cover-venue">{{venue}}</div>
+    {{/venue}}
+    <h1 class="cover-title">{{title}}</h1>
+    {{#title_en}}
+    <div class="cover-title-en">{{title_en}}</div>
+    {{/title_en}}
+    <div class="cover-divider"></div>
+    {{#authors}}
+    <div class="cover-authors">{{authors}}</div>
+    {{/authors}}
+    {{#tag}}
+    <div class="cover-tag">{{tag}}</div>
+    {{/tag}}
+  </div>
+</body>
+</html>

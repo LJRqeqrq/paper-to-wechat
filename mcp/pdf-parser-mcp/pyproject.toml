@@ -1,0 +1,15 @@
+[project]
+name = "pdf-parser-mcp"
+version = "0.1.0"
+description = "学术论文 PDF 解析 MCP Server：提取 Markdown、图表、元数据"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=1.0.0",
+    "PyMuPDF>=1.24.0",
+    "pymupdf4llm>=0.0.10",
+    "httpx>=0.27.0",
+    "Pillow>=10.0.0",
+]
+
+[project.scripts]
+pdf-parser-mcp = "server:main"
