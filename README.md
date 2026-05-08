@@ -41,7 +41,7 @@ npm run build
 
 ### 3. 配置微信密钥
 
-在项目根目录创建 `.env` 文件（已加入 `.gitignore`，不会提交到 Git）：
+在项目根目录创建 `.env` 文件：
 
 ```bash
 WECHAT_APP_ID=你的公众号AppID
