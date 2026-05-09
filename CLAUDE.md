@@ -9,18 +9,36 @@
 - 配图自动上传微信图片库
 - 自动发布到微信公众号草稿箱
 
-## 工作流
+## 工作流（每一步都必须执行，不可跳过）
 
-1. **PDF 解析阶段：** 调用 `pdf-parser-mcp` 解析 PDF
-   - 提取全文 Markdown（content.md）
-   - 提取图表（figures/，含英文标题渲染在图片中）
-   - 提取表格（tables/，截取为图片）
-   - 提取元数据（metadata.json）
-2. **图片预处理阶段：** 运行 `img_preprocess.py` 对 `figures/` 和 `tables/` 中所有图片检测格式、压缩大图、转换 WebP
-3. **封面生成阶段：** 根据论文信息生成 HTML 封面 → `screenshot-mcp` 截图
-4. **文章编排阶段：** 将 Markdown 内容 + 图表 + 表格编排为微信公众号风格文章
-   - **图片路径必须使用绝对路径**（否则发布后图片不显示）
-5. **草稿发布阶段：** 通过 `wenyan-mcp` 发布到微信草稿箱（使用 `file_path` 参数，非 `content`）
+### 步骤 1：PDF 解析（pdf-content-extractor agent）
+- 调用 `pdf-parser-mcp` 解析 PDF
+- 提取全文 Markdown → `content.md`
+- 提取图表（含英文标题渲染） → `figures/` + `figures_manifest.json`
+- 提取表格（截取为图片） → `tables/` + `tables_manifest.json`
+- 提取元数据 → `metadata.json`
+- **翻译所有 caption_cn 为中文**
+- 运行 `img_preprocess.py` 对 `figures/` 和 `tables/` 图片预处理
+- ✅ 验证：确认 figures/ 和 tables/ 都有产出物
+
+### 步骤 2：封面生成（cover-image-generator agent）
+- 根据 `metadata.json` 生成封面 HTML
+- 调用 `screenshot-mcp` 截图 → `cover.png`（900×500）
+- ✅ 验证：cover.png 存在且 < 1MB
+
+### 步骤 3：文章编排（wechat-article-composer agent）
+- **必须输出中文**（翻译英文论文内容）
+- 根据 manifest 将图表和表格插入正文合适位置
+- **图片/表格在上，caption 在下**：`![图X](path)` 后紧跟 `*▲ 图X：中文说明*`
+- 所有图片路径使用**绝对路径**
+- 生成带 frontmatter 的 `article.md`
+- ✅ 验证：推文是中文、caption 格式为 `▲ 图X/▲ 表X`、caption 在图片下方、路径为绝对路径
+
+### 步骤 4：草稿发布（wechat-draft-publisher agent）
+- 发布前检查：图片格式/大小、无锚点链接、无 WebP
+- 调用 `wenyan-mcp publish_article`，使用 **`file_path`** 参数（非 `content`）
+- 选择主题
+- ✅ 验证：返回 media_id，无错误码
 
 ## 微信公众号发布注意事项
 
@@ -67,9 +85,23 @@ cover: /绝对/路径/到/封面图.png
 2. 压缩 > 1MB 的图片（resize 2000x2000 + quality 85%）
 3. 确保扩展名与实际格式一致
 
+## Caption 位置要求
+
+**图片/表格在上，caption 在下。不可反过来！**
+
+```markdown
+<!-- 正确 -->
+![图1](C:/Users/.../figures/figure_01.png)
+*▲ 图1：中文说明*
+
+<!-- 错误 -->
+▲ 图1：中文说明
+![图1](C:/Users/.../figures/figure_01.png)
+```
+
 ## 图片路径要求
 
-**article.md 中所有图片必须使用绝对路径**，否则发布后图片不显示：
+**article.md 中所有图片必须使用绝对路径**，且含空格的路径必须用尖括号包裹（wenyan-mcp 已自动处理）：
 
 ```markdown
 <!-- 正确 -->

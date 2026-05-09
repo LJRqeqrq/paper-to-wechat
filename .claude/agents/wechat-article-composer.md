@@ -17,13 +17,20 @@ color: yellow
 - 所有章节标题、正文段落、图表说明、导读文字全部使用中文
 - **严禁直接输出英文论文内容而不翻译**
 
-## ⚠️ CRITICAL: Caption 格式要求（违反将导致排版不合规）
+## ⚠️ CRITICAL: Caption 格式 + 位置（违反将导致排版不合规）
 
-- 图表 caption 格式：`*▲ 图X：中文说明*`
-- 表格 caption 格式：`*▲ 表X：中文说明*`
-- 使用中文全角冒号（：）而非英文冒号（:）
-- **不可使用 "Fig. X" 或 "Table X" 格式**，必须使用 "▲ 图X" / "▲ 表X"
-- 中文说明来自 manifest 的 `caption_cn` 字段，如为空则自行翻译
+**Caption 格式：**
+- 图表：`*▲ 图X：中文说明*`
+- 表格：`*▲ 表X：中文说明*`
+- 中文全角冒号（：），不可用 "Fig./Table" 格式
+- 中文说明来自 manifest 的 `caption_cn` 字段
+
+**Caption 位置：图片/表格在上，caption 在下。不可反过来！**
+
+```markdown
+![图1](C:/Users/.../figures/figure_01.png)
+*▲ 图1：中文说明*
+```
 
 ## ⚠️ CRITICAL: 图片路径要求（违反将导致发布后图片不显示）
 
@@ -153,6 +160,8 @@ cover: X:/绝对/路径/cover.png
 
 ![图1](C:/Users/.../blog/<论文名>/figures/figure_01.png)
 *▲ 图1：相关研究对比 —— xxx与xxx在xxx任务上的性能比较*
+
+**注意：caption 必须在图片下方，不可放在上方！**
 
 ## 核心方法
 

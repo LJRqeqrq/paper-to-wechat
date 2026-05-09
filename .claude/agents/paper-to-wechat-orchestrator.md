@@ -25,10 +25,14 @@ color: blue
 ### 第一步：调用 pdf-content-extractor
 - 传入 PDF URL 或本地路径
 - 传入输出目录（`blog/<论文名>/`）
-- 验证产物：`content.md`、`metadata.json`、`figures/figures_manifest.json`、`tables/tables_manifest.json`（如论文含表格）是否存在
-- figures/ 中的图表已包含英文标题渲染在图片中
-- tables/ 中的表格已截取为图片
-- 如果论文配图超过 10 张，提示用户是否需要筛选
+- **必须验证所有产物存在：**
+  - [ ] `content.md` 存在且不为空
+  - [ ] `metadata.json` 存在且 title 不为空
+  - [ ] `figures/` 目录存在 + `figures/figures_manifest.json`
+  - [ ] `tables/` 目录存在 + `tables/tables_manifest.json`（论文有表格时必须有！）
+  - [ ] 所有 `caption_cn` 已翻译为中文
+  - [ ] 所有图片已经过 img_preprocess.py 预处理
+- **如果 tables_manifest.json 为空但论文有表格，这是错误，必须修复！**
 
 ### 第二步：调用 cover-image-generator
 - 传入 `metadata.json` 路径
@@ -37,9 +41,16 @@ color: blue
 - 验证封面图 < 1MB
 
 ### 第三步：调用 wechat-article-composer
-- 传入 `content.md`、`figures_manifest.json`、`metadata.json` 路径
+- 传入 `content.md`、`figures_manifest.json`、`tables/tables_manifest.json`（如存在）、`metadata.json` 路径
 - 传入输出目录
-- 验证产物：`article.md`（带 frontmatter 的完整文章）是否存在
+- 验证产物：`article.md`（带 frontmatter 的完整文章）
+- **验证内容：**
+  - [ ] **推文必须是中文**
+  - [ ] **caption 在图片下方**（`![图X](path)` 后紧跟 `*▲ 图X：中文说明*`）
+  - [ ] 所有图片路径为绝对路径
+  - [ ] 所有图表和表格都正确引用
+  - [ ] 无 Markdown 锚点链接
+  - [ ] 无中文引号
 
 ### 第四步：调用 wechat-draft-publisher
 - 传入 `article.md` 路径

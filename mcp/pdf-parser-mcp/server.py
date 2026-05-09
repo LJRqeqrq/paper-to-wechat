@@ -142,22 +142,16 @@ def _is_valid_table_caption(block: tuple, text: str) -> bool:
     """
     判断文本块是否为真正的表格标题（而非正文中的交叉引用）。
 
-    真正的表格标题特征：单行、简短、紧跟表格数据。
-    正文引用特征：多行、含叙事动词（presents/shows/summarizes 等）。
+    真正的表格标题特征：以"Table X"开头且首行为简短标题。
+    正文引用特征：以"Table X presents/shows..."开头的叙事性内容。
+
+    注意：有些 PDF 中表格标题和内容被合并为一个文本块，
+    此时以首行判断为准，不因整体高度大而拒绝。
     """
     bbox = fitz.Rect(block[:4])
     height = bbox.y1 - bbox.y0
 
-    # 多行文本块 → 很可能是正文引用，不是表格标题
-    if height > 30:
-        return False
-
-    # 表格标题通常很短，正文引用可能是完整句子
-    if len(text) > 150:
-        return False
-
     # 检测正文引用特征词（作为动词使用，后接宾语）
-    # 排除在表格标题中作为名词使用的情况（如"List of abbreviations"）
     body_ref_patterns = [
         r'\bpresents?\s',
         r'\bshows?\s',
@@ -171,6 +165,25 @@ def _is_valid_table_caption(block: tuple, text: str) -> bool:
         r'\bevaluates?\s',
         r'\bconducts?\s',
     ]
+
+    # 提取首行（表格标题行）
+    first_line = text.split("\n")[0].strip()
+
+    # 首行必须是简短的表格标题（"Table X ..."）
+    if len(first_line) > 150:
+        return False
+
+    # 高文本块（表格内容合并在内）：检查首行不含叙事动词
+    if height > 30:
+        for pat in body_ref_patterns:
+            if re.search(pat, first_line, re.IGNORECASE):
+                return False
+        return True
+
+    # 矮文本块（仅标题行）：用整体文本检查
+    if len(text) > 150:
+        return False
+
     for pat in body_ref_patterns:
         if re.search(pat, text, re.IGNORECASE):
             return False
@@ -185,7 +198,7 @@ def _is_table_content_block(block: tuple) -> bool:
     表格行特征：短文本、含数字或缩写、结构化布局、高缩写密度。
     正文特征：长叙事句、流畅段落、完整句子结构。
     """
-    text = block[4].strip()
+    text = (block[4] or "").strip()
     if not text:
         return False
 
@@ -343,7 +356,9 @@ def extract_figures_and_tables_from_pdf(
         table_captions = []   # [(block, table_number, text)]
 
         for block in text_blocks:
-            text = block[4].strip()
+            text = (block[4] or "").strip()
+            if not text:
+                continue
             # 匹配 "Fig. X." / "Figure X."
             m = re.match(
                 r"(?:Fig\.?|Figure)\s*(\d+)[\.:]\s*(.+)",

@@ -104,7 +104,7 @@ WECHAT_APP_SECRET=你的公众号AppSecret
 paper-to-wechat/
 ├── .claude/
 │   ├── agents/                          # Agent 定义（主编排 + 4 个子 Agent）
-│   └── settings.local.json              # 本机权限配置
+│   └── settings.local.json              # 本机权限配置（可选）
 ├── .env                                 # 微信密钥
 ├── .mcp.json                            # MCP 服务器注册
 ├── CLAUDE.md                            # Claude Code 项目指令

@@ -54,17 +54,26 @@ function resolveImagePaths(content: string, baseDir: string): string {
             }
             // Resolve relative path to absolute path
             const absolutePath = path.resolve(baseDir, coverPath);
-            return `${prefix}${absolutePath}`;
+            const formattedPath = /\s/.test(absolutePath) ? `<${absolutePath}>` : absolutePath;
+            return `${prefix}${formattedPath}`;
         })
-        // Resolve markdown image syntax
-        .replace(/!\[([^\]]*)\]\(([^)"\s]+)(?:\s+"[^"]*")?\)/g, (match, alt, imagePath) => {
-            // Skip if already absolute path (starts with / or http:// or https://)
-            if (imagePath.startsWith('/') || imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        // Resolve markdown image syntax - allow spaces in path, support angle brackets
+        .replace(/!\[([^\]]*)\]\(<?([^)>]+)>?(?:\s+"[^"]*")?\)/g, (match, alt, imagePath) => {
+            // Skip if http URL
+            if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
                 return match;
             }
-            // Resolve relative path to absolute path
-            const absolutePath = path.resolve(baseDir, imagePath);
-            return `![${alt}](${absolutePath})`;
+            // Determine if path is already absolute
+            let resolvedPath: string;
+            if (imagePath.startsWith('/') || /^[A-Za-z]:/.test(imagePath)) {
+                resolvedPath = imagePath;
+            } else {
+                resolvedPath = path.resolve(baseDir, imagePath);
+            }
+            // Wrap in angle brackets if path contains spaces (marked.js can't handle bare spaces)
+            const needsBrackets = /\s/.test(resolvedPath);
+            const formattedPath = needsBrackets ? `<${resolvedPath}>` : resolvedPath;
+            return `![${alt}](${formattedPath})`;
         })
         // Resolve HTML img tags
         .replace(/<img\s+([^>]*?)src=["']([^"']+)["']([^>]*?)>/gi, (match, before, imagePath, after) => {
